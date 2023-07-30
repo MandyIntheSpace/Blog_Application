@@ -11,4 +11,8 @@ public class ApiResponse {
     private String message;
     private boolean success;
 
+//    public ApiResponse(String userDeleteSuccessfully, boolean b) {
+//        message=userDeleteSuccessfully;
+//        success=b;
+//    }
 }

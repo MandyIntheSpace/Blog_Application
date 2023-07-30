@@ -5,6 +5,7 @@ import com.application.blog.payloads.UserDto;
 import com.application.blog.repositories.UserRepository;
 import com.application.blog.services.UserService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.application.blog.exceptions.ResourceNotFoundException;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserServicesimpl implements UserService {
     private UserRepository userRepository;
+    private final ModelMapper modelMapper;
     @Override
     public UserDto create(UserDto userDto) {
         User user = this.dtoToUser(userDto);
@@ -69,22 +71,24 @@ public class UserServicesimpl implements UserService {
         this.userRepository.delete(user);
     }
     private User dtoToUser(UserDto userDto) {
-        User user = new User();
-        user.setId(userDto.getId());
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
-        user.setAbout(userDto.getAbout());
+//        User user = new User();
+//        user.setId(userDto.getId());
+//        user.setName(userDto.getName());
+//        user.setEmail(userDto.getEmail());
+//        user.setPassword(userDto.getPassword());
+//        user.setAbout(userDto.getAbout());
+        User user = this.modelMapper.map(userDto, User.class);
         return user;
     }
 
     public UserDto userToDto(User user) {
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setName(user.getName());
-        userDto.setEmail(user.getEmail());
-        userDto.setPassword(user.getPassword());
-        userDto.setAbout(user.getAbout());
+//        UserDto userDto = new UserDto();
+//        userDto.setId(user.getId());
+//        userDto.setName(user.getName());
+//        userDto.setEmail(user.getEmail());
+//        userDto.setPassword(user.getPassword());
+//        userDto.setAbout(user.getAbout());
+        UserDto userDto = this.modelMapper.map(user, UserDto.class);
         return userDto;
     }
 }
