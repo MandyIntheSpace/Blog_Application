@@ -1,11 +1,18 @@
 package com.application.blog.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "post")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,4 +25,11 @@ public class Post {
     private String imageName;
     @Column(name = "post_date", length = 225, nullable = false )
     private Date addedDate;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToOne
+    private User user;
 }

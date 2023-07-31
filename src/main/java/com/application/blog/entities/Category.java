@@ -5,6 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 @Entity
 @Table(name = "categories")
 @NoArgsConstructor
@@ -14,8 +18,13 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
    private int categoryId;
+
     @Column(name = "title", length = 225, nullable = false)
    private String categoryTitle;
+
     @Column(name = "description")
    private String categoryDescription;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<Post> postSet = new ArrayList<>();
 }
