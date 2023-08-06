@@ -11,10 +11,11 @@ import com.application.blog.repositories.CategoryRepo;
 import com.application.blog.repositories.PostRepo;
 import com.application.blog.repositories.UserRepository;
 import com.application.blog.services.PostService;
-import jakarta.validation.constraints.Null;
+//import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SecondaryRow;
+//import lombok.NoArgsConstructor;
+//import org.hibernate.NonUniqueObjectException;
+//import org.hibernate.annotations.SecondaryRow;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -90,14 +91,19 @@ public class PostServicesimpl implements PostService {
         List<PostDto> postDtoList = postList1.stream().map(post ->
                 this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
 
-        PostResponse postResponse = new PostResponse();
-        postResponse.setContent(postDtoList);
-        postResponse.setPageNumber(postList.getNumber());
-        postResponse.setPageSize(postList.getSize());
-        postResponse.setTotalElements((int) postList.getTotalElements());
-        postResponse.setTotalPages(postList.getTotalPages());
-        postResponse.setLastPages(postList.isLast());
-        return postResponse;
+        try {
+            PostResponse postResponse = new PostResponse();
+            postResponse.setContent(postDtoList);
+            postResponse.setPageNumber(postList.getNumber());
+            postResponse.setPageSize(postList.getSize());
+            postResponse.setTotalElements((int) postList.getTotalElements());
+            postResponse.setTotalPages(postList.getTotalPages());
+            postResponse.setLastPages(postList.isLast());
+            return postResponse;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
     }
 
     @Override

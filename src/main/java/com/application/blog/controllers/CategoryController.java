@@ -4,13 +4,14 @@ import com.application.blog.constant.ApiConstant;
 import com.application.blog.payloads.ApiResponse;
 import com.application.blog.payloads.CategoryDto;
 import com.application.blog.services.CategoryService;
-import jakarta.validation.Valid;
+//import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController

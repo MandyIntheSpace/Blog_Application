@@ -10,9 +10,9 @@ import com.application.blog.payloads.PostResponse;
 import com.application.blog.services.FileService;
 import com.application.blog.services.PostService;
 import com.application.blog.services.impl.PathUtils;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
+//import jakarta.servlet.http.HttpServlet;
+//import jakarta.servlet.http.HttpServletResponse;
+//import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,13 +22,14 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 @RestController
-@RequestMapping(ApiConstant.POST_REQUEST_MAPPING)
+@RequestMapping(ApiConstant.POST_COMMENT_REQUEST_MAPPING)
 public class PostController {
     @Autowired
     private PostService postService;
@@ -47,56 +48,59 @@ public class PostController {
         PostDto postDto1 = this.postService.createPost(postDto, userId, categoryId);
         return new ResponseEntity<>(postDto1, HttpStatus.CREATED);
     }
-//    @GetMapping("/user/{userId}/posts")
+
+    //    @GetMapping("/user/{userId}/posts")
     @GetMapping(ApiConstant.USER_URL + ApiConstant.USERID_URL + ApiConstant.POST_URL)
     public ResponseEntity<List<PostDto>> getPostByUser(@PathVariable Integer userId) {
         List<PostDto> postDtoList = this.postService.getPostByUser(userId);
         return new ResponseEntity<List<PostDto>>(postDtoList, HttpStatus.OK);
 //        return  null;
     }
-//    @GetMapping("/category/{categoryId}/posts")
+
+    //    @GetMapping("/category/{categoryId}/posts")
     @GetMapping(ApiConstant.CATEGORY_URL + ApiConstant.CATEGORYID_URL + ApiConstant.POST_URL)
-    public ResponseEntity<List<PostDto>> getPostByCategory(@PathVariable Integer categoryId){
+    public ResponseEntity<List<PostDto>> getPostByCategory(@PathVariable Integer categoryId) {
         List<PostDto> postDtoList = this.postService.getPostByCategory(categoryId);
         return new ResponseEntity<List<PostDto>>(postDtoList, HttpStatus.OK);
     }
 
-//    @GetMapping("/posts")
+    //    @GetMapping("/posts")
     @GetMapping(ApiConstant.POST_URL)
-    public ResponseEntity<PostResponse> getAllPost(
-            @RequestParam(value = "pageNumber", defaultValue =  PageAndSortingConstant.DEFAULT_PAGE_NUMBER, required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue =  PageAndSortingConstant.DEFAULT_PAGE_SIZE, required = false) Integer pageSize,
-            @RequestParam(value = "sortBy", defaultValue =  PageAndSortingConstant.DEFAULT_SORT_BY, required = false) String sortBy,
+    public ResponseEntity<Object> getAllPost(
+            @RequestParam(value = "pageNumber", defaultValue = PageAndSortingConstant.DEFAULT_PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = PageAndSortingConstant.DEFAULT_PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = PageAndSortingConstant.DEFAULT_SORT_BY, required = false) String sortBy,
             @RequestParam(value = "sortDir", defaultValue = PageAndSortingConstant.DEFAULT_SORT_DIRECTION, required = false) String sortDir
     ) {
         PostResponse postDtoList = this.postService.getAllPost(pageNumber, pageSize, sortBy, sortDir);
-        return new ResponseEntity<PostResponse>(postDtoList, HttpStatus.OK);
+//        return new ResponseEntity<Object>(postDtoList, HttpStatus.OK);
+        return  new ResponseEntity<>(postDtoList,HttpStatus.OK);
     }
 
-//    @DeleteMapping("/delete/{postId}")
+    //    @DeleteMapping("/delete/{postId}")
     @DeleteMapping(ApiConstant.DELETE_URL + ApiConstant.POSTID_URL)
     public ResponseEntity<Void> deleteUserById(@PathVariable Integer postId) {
         this.postService.deletePost(postId);
         return new ResponseEntity(new ApiResponse("The post having the specific postid have been deleted", true), HttpStatus.OK);
     }
 
-//    @PutMapping("/posts/{postId}")
+    //    @PutMapping("/posts/{postId}")
     @PutMapping(ApiConstant.POST_URL + ApiConstant.POSTID_URL)
     public ResponseEntity<PostDto> updatePost(@RequestBody PostDto postDto, @PathVariable Integer postId) {
         PostDto postDto1 = this.postService.updatePost(postDto, postId);
         return new ResponseEntity<PostDto>(postDto1, HttpStatus.OK);
     }
 
-//    @GetMapping("/posts/search/{keywords}")
+    //    @GetMapping("/posts/search/{keywords}")
     @GetMapping(ApiConstant.POST_URL + ApiConstant.SEARCH_URL + ApiConstant.KEYWORDS_URL)
-    public ResponseEntity<List<PostDto>> searchPost(@PathVariable ("keywords") String keywords){
+    public ResponseEntity<List<PostDto>> searchPost(@PathVariable("keywords") String keywords) {
         List<PostDto> postDtoList = this.postService.searchPost1(keywords);
         return new ResponseEntity<List<PostDto>>(postDtoList, HttpStatus.OK);
     }
 
     @PostMapping(ApiConstant.POST_URL + ApiConstant.IMAGE_URL + ApiConstant.UPLOAD_URL + ApiConstant.POSTID_URL)
     public ResponseEntity<PostDto> uploadImage(@RequestParam("image")
-                                                   MultipartFile multipartFile,
+                                               MultipartFile multipartFile,
                                                @PathVariable Integer postId) throws IOException {
         String normalizedPath = this.pathUtils.normalizedPath(path);
         String fileName = this.fileService.uploadImage(normalizedPath, multipartFile);
