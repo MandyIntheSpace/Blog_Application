@@ -24,15 +24,24 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+@EnableWebMvc
 @AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private CustomUserDeatiilService customUserDeatiilService;
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public static final String PUBLIC_URL[] = {
+            ApiConstant.LOGIN_URL, ApiConstant.USER_REQUEST_MAPPING + ApiConstant.GLOBAL_URL
+            , ApiConstant.USER_REQUEST_MAPPING + ApiConstant.USERID_URL, ApiConstant.REGISTER_URL,
+            ApiConstant.API_DOCS3, ApiConstant.API_DOCS2, ApiConstant.SWAGGER_RESOURCES,
+            ApiConstant.SWAGGER_UI, ApiConstant.WEBJARS
+    };
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception{
         httpSecurity
@@ -40,9 +49,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .authorizeHttpRequests()
 //                .antMatchers(ApiConstant.POST_COMMENT_REQUEST_MAPPING + ApiConstant.AUTH_URL + ApiConstant.LOGIN_URL).permitAll()
-                .antMatchers(ApiConstant.LOGIN_URL, ApiConstant.USER_REQUEST_MAPPING + ApiConstant.GLOBAL_URL
-                , ApiConstant.USER_REQUEST_MAPPING + ApiConstant.USERID_URL, ApiConstant.REGISTER_URL).permitAll()
+//                .antMatchers(ApiConstant.LOGIN_URL, ApiConstant.USER_REQUEST_MAPPING + ApiConstant.GLOBAL_URL
+//                , ApiConstant.USER_REQUEST_MAPPING + ApiConstant.USERID_URL, ApiConstant.REGISTER_URL).permitAll()
+                .antMatchers(PUBLIC_URL).permitAll()
                 .antMatchers(HttpMethod.GET).permitAll()
+//                .antMatchers(ApiConstant.API_DOCS).permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

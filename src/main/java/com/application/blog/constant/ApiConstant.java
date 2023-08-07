@@ -22,8 +22,12 @@ public class ApiConstant {
     public static final String COMMENT_ID = "/{commentId}";
     public static final String AUTH_URL = "/auth";
     public static final String LOGIN_URL = "/login";
-
     public static final String REGISTER_URL = "/register";
-
+    public static final String API_DOCS3 = "/v3/api-docs";
+    public static final String API_DOCS2 = "/v2/api-docs";
+    public static final String SWAGGER_RESOURCES = "/swagger-resources/**";
+    public static final String SWAGGER_UI = "/swagger-ui/**";
+    public static final String WEBJARS = "/webjars/**";
+    public static final String AUTHORIZATION_HEADER = "Authorization";
 
 }
