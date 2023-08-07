@@ -1,12 +1,17 @@
 package com.application.blog.services.impl;
 
+import com.application.blog.constant.ApiConstant;
+import com.application.blog.constant.PageAndSortingConstant;
+import com.application.blog.entities.Role;
 import com.application.blog.entities.User;
 import com.application.blog.payloads.UserDto;
+import com.application.blog.repositories.RoleRepo;
 import com.application.blog.repositories.UserRepository;
 import com.application.blog.services.UserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.application.blog.exceptions.ResourceNotFoundException;
 
@@ -20,7 +25,20 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserServicesimpl implements UserService {
     private UserRepository userRepository;
-    private final ModelMapper modelMapper;
+    private  ModelMapper modelMapper;
+    private PasswordEncoder passwordEncoder;
+    private RoleRepo roleRepo;
+
+    @Override
+    public UserDto registerNewUser(UserDto userDto) {
+        User user = this.modelMapper.map(userDto, User.class);
+        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+        Role role = this.roleRepo.findById(PageAndSortingConstant.NORMAL_USERS).get();
+        user.getRoles().add(role);
+        User savedUser = this.userRepository.save(user);
+        return this.modelMapper.map(savedUser, UserDto.class);
+    }
+
     @Override
     public UserDto create(UserDto userDto) {
         User user = this.dtoToUser(userDto);

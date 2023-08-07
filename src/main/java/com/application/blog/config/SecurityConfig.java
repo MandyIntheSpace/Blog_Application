@@ -3,9 +3,11 @@ package com.application.blog.config;
 import com.application.blog.Security.CustomUserDeatiilService;
 import com.application.blog.Security.JwtAuthenticationEntryPoint;
 import com.application.blog.Security.JwtAuthenticationFilter;
+import com.application.blog.constant.ApiConstant;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
@@ -37,7 +39,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .antMatchers("/api/auth/login").permitAll()
+//                .antMatchers(ApiConstant.POST_COMMENT_REQUEST_MAPPING + ApiConstant.AUTH_URL + ApiConstant.LOGIN_URL).permitAll()
+                .antMatchers(ApiConstant.LOGIN_URL, ApiConstant.USER_REQUEST_MAPPING + ApiConstant.GLOBAL_URL
+                , ApiConstant.USER_REQUEST_MAPPING + ApiConstant.USERID_URL, ApiConstant.REGISTER_URL).permitAll()
+                .antMatchers(HttpMethod.GET).permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

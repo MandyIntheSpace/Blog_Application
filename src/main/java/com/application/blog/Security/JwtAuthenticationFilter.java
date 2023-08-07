@@ -32,12 +32,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         //1. get token
         String requestToken = request.getHeader("Authorization");
-        System.out.println(requestToken);
+        System.out.println(requestToken+"hit filter");
 
         String username = null;
         String token = null;
-        if (requestToken != null && requestToken.startsWith("Basic")) {
-             token = requestToken.substring( 6);
+        if (requestToken != null && requestToken.startsWith("Bearer")) {
+             token = requestToken.substring( 7);
              try{
                  username = this.jwtTokenHelper.getUsernameFromToken(token);
              } catch (IllegalArgumentException e) {
@@ -53,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
              }
 
         } else{
-            System.out.println("Jwt token does not begin with Basic");
+            System.out.println("Jwt token does not begin with Bearer");
         }
 
         //Once we get the token, now we will validate the token which being fetched

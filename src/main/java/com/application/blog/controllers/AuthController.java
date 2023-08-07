@@ -4,6 +4,8 @@ import com.application.blog.Security.JwtTokenHelper;
 import com.application.blog.payloads.JwtAuthRequest;
 import com.application.blog.payloads.JwtAuthResponse;
 import com.application.blog.constant.ApiConstant;
+import com.application.blog.payloads.UserDto;
+import com.application.blog.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(ApiConstant.POST_COMMENT_REQUEST_MAPPING + ApiConstant.AUTH_URL)
+//@RequestMapping(ApiConstant.POST_COMMENT_REQUEST_MAPPING + ApiConstant.AUTH_URL)
 public class AuthController {
     private JwtTokenHelper jwtTokenHelper;
     private UserDetailsService userDetailsService;
     private AuthenticationManager authenticationManager;
+    private UserService userService;
     @PostMapping(ApiConstant.LOGIN_URL)
-    public ResponseEntity<JwtAuthResponse> createToken(
+//@PostMapping("/login")
+public ResponseEntity<JwtAuthResponse> createToken(
             @RequestBody JwtAuthRequest jwtAuthRequest
             ) {
         this.authenticate(jwtAuthRequest.getEmail(), jwtAuthRequest.getPassword());
@@ -33,16 +37,18 @@ public class AuthController {
         String token = this.jwtTokenHelper.generateToken(userDetails);
         JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
         jwtAuthResponse.setToken(token);
-        return new ResponseEntity<JwtAuthResponse>(jwtAuthResponse, HttpStatus.CREATED);
+        System.out.println(token + "Checking token");
+        return new ResponseEntity<JwtAuthResponse>(jwtAuthResponse, HttpStatus.OK);
     }
 
     private void authenticate(String username, String password){
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-        try{
             this.authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        } catch (DisabledException e) {
-            e.printStackTrace();
-            System.out.println("The specific user is disabled" + e.getMessage());
-        }
+    }
+
+    @PostMapping(ApiConstant.REGISTER_URL)
+    private ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto) {
+        UserDto userDto1 = this.userService.registerNewUser(userDto);
+        return new ResponseEntity<UserDto>(userDto1, HttpStatus.CREATED);
     }
 }
